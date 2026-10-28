@@ -92,6 +92,9 @@ class CustomerJoinStoreView(APIView):
             tenant_user.is_active = True
             tenant_user.save()
         
+        from customer.models import CustomerProfile
+        CustomerProfile.objects.get_or_create(user=request.user, tenant=tenant)
+        
         return Response({
             'message': 'Successfully joined store',
             'tenant': {

@@ -1,6 +1,6 @@
 from django.utils.deprecation import MiddlewareMixin
 from django.http import JsonResponse
-from vendors.models import Tenant
+from vendors.models import Tenant, TenantUser
 import jwt
 from django.conf import settings
 from rest_framework_simplejwt.tokens import UntypedToken
@@ -20,8 +20,24 @@ class TenantMiddleware(MiddlewareMixin):
                 untyped_token = UntypedToken(token)
                 token_data = untyped_token.payload
                 tenant_id = token_data.get('tenant_id')
+                header_tenant_id = request.headers.get('X-Tenant-ID')
                 
-                if tenant_id:
+                if header_tenant_id:
+                    membership = TenantUser.objects.filter(
+                        user_id=token_data.get('user_id'),
+                        tenant_id=header_tenant_id,
+                        is_active=True,
+                        tenant__is_active=True
+                    ).select_related('tenant').first()
+                    if not membership:
+                        return JsonResponse(
+                            {'error': 'Not a member of this tenant'},
+                            status=403
+                        )
+                    request.tenant = membership.tenant
+                    request.tenant_id = membership.tenant_id
+                    request.user_role = membership.role
+                elif tenant_id:
                     try:
                         tenant = Tenant.objects.get(id=tenant_id)
                         request.tenant = tenant

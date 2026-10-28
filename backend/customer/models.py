@@ -75,7 +75,7 @@ class CustomerAddress(models.Model):
             address_type=self.address_type,
             is_default=True
             ).update(is_default=False)
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
         
 class CustomerWishlist(models.Model):
     customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE,
