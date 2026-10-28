@@ -1,19 +1,45 @@
 from pathlib import Path
 from datetime import timedelta
 import os
-from decouple import config
+from decouple import config, UndefinedValueError
+from django.core.exceptions import ImproperlyConfigured
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-07_r75b3n1_ie$&3-sgnb&-crro*4a6s!5!22t09!_savnzct_')
+REQUIRED_ENV_VARS = [
+    'SECRET_KEY',
+    'DEBUG',
+    'ALLOWED_HOSTS',
+    'DB_NAME',
+    'DB_USER',
+    'DB_PASSWORD',
+    'DB_HOST',
+    'DB_PORT',
+]
+
+_missing = []
+for _var in REQUIRED_ENV_VARS:
+    try:
+        config(_var)
+    except UndefinedValueError:
+        _missing.append(_var)
+
+if _missing:
+    raise ImproperlyConfigured(
+        'Missing required environment variables: {}. '
+        'See backend/.env.example for the full list.'.format(', '.join(_missing))
+    )
 
 
-DEBUG = config('DEBUG', default=True, cast=bool)
+SECRET_KEY = config('SECRET_KEY')
 
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='*').split(',')
+DEBUG = config('DEBUG', cast=bool)
+
+
+ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(',')
 
 
 INSTALLED_APPS = [
@@ -77,11 +103,11 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='multi_tenant_ecommerce'),
-        'USER': config('DB_USER', default='postgres'),
-        'PASSWORD': config('DB_PASSWORD', default=''),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
 }
 
