@@ -4,9 +4,9 @@ ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 
 WORKDIR /app
-COPY frontend/package.json frontend/package-lock.json ./
+COPY package.json package-lock.json ./
 RUN npm ci || npm install || npm install --legacy-peer-deps
-COPY frontend/ .
+COPY . .
 RUN npm run build
 
 FROM nginx:1.27-alpine
