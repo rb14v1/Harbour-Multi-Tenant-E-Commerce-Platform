@@ -21,8 +21,8 @@ provider "azurerm" {
 
 
 resource "azurerm_postgresql_flexible_server" "postgresql" {
-  name                   = "psql-e-com-test-5"
-  resource_group_name    = "e-com-test-5"
+  name                   = "psql-ecom-test-6"
+  resource_group_name    = "ecom-test-6"
   location               = "uksouth"
   version                = "16"
   sku_name               = "B_Standard_B1ms"
@@ -54,15 +54,15 @@ data "azurerm_private_dns_zone" "postgresql_dns_zone" {
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "postgresql_dns_zone_link" {
-  name                  = "link-e-com-test-5"
+  name                  = "link-ecom-test-6"
   resource_group_name   = var.hub_resource_group
   private_dns_zone_name = data.azurerm_private_dns_zone.postgresql_dns_zone.name
   virtual_network_id    = var.vnet_id
 }
 
 resource "azurerm_private_endpoint" "postgresql_pe" {
-  name                = "pe-psql-e-com-test-5"
-  resource_group_name = "e-com-test-5"
+  name                = "pe-psql-ecom-test-6"
+  resource_group_name = "ecom-test-6"
   location            = "uksouth"
   subnet_id           = var.subnet_id
 
