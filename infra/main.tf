@@ -84,6 +84,13 @@ resource "azurerm_postgresql_flexible_server_configuration" "log_checkpoints" {
   value     = "on"
 }
 
+# Log connections (AZU-0019).
+resource "azurerm_postgresql_flexible_server_configuration" "log_connections" {
+  name      = "log_connections"
+  server_id = azurerm_postgresql_flexible_server.postgresql.id
+  value     = "on"
+}
+
 resource "random_password" "postgresql_admin" {
   length  = 24
   special = true
