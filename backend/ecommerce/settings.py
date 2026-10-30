@@ -17,6 +17,8 @@ REQUIRED_ENV_VARS = [
     'DB_PASSWORD',
     'DB_HOST',
     'DB_PORT',
+    'JWT_SIGNING_KEY',
+    'CORS_ALLOWED_ORIGINS',
 ]
 
 _missing = []
@@ -158,7 +160,7 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
+    'SIGNING_KEY': config('JWT_SIGNING_KEY'),
     'AUTH_HEADER_TYPES': ('Bearer',),
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
@@ -168,7 +170,7 @@ SIMPLE_JWT = {
 
 
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [o.strip() for o in config('CORS_ALLOWED_ORIGINS').split(',') if o.strip()]
 from corsheaders.defaults import default_headers
 CORS_ALLOW_HEADERS = list(default_headers) + ['x-tenant-id']
 
