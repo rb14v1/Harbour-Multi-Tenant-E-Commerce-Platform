@@ -1,6 +1,9 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
 
-const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api'
+const BASE: string = import.meta.env.VITE_API_URL
+if (!BASE) {
+  throw new Error('Missing required environment variable: VITE_API_URL. See frontend/.env.example.')
+}
 
 export const storage = {
   get access() { return localStorage.getItem('access') },
