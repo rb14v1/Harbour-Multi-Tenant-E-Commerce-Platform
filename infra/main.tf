@@ -97,6 +97,13 @@ resource "azurerm_postgresql_flexible_server_configuration" "log_connections" {
   value     = "on"
 }
 
+# Connection throttling (AZU-0021).
+resource "azurerm_postgresql_flexible_server_configuration" "connection_throttling" {
+  name      = "connection_throttle.enable"
+  server_id = azurerm_postgresql_flexible_server.postgresql.id
+  value     = "on"
+}
+
 resource "random_password" "postgresql_admin" {
   length  = 24
   special = true
