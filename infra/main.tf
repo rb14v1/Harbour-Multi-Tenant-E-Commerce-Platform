@@ -78,6 +78,18 @@ variable "backend_identity_principal_id" {
   type        = string
 }
 
+variable "key_vault_allowed_ip_rules" {
+  description = "Public IPs/CIDRs allowed through the Key Vault firewall (e.g. the Terraform deployment runner's egress IP, which writes the secrets below)."
+  type        = list(string)
+  default     = []
+}
+
+variable "key_vault_allowed_subnet_ids" {
+  description = "Subnet IDs (with the Microsoft.KeyVault service endpoint enabled) allowed through the Key Vault firewall, e.g. the Container Apps Environment subnet the backend runs in."
+  type        = list(string)
+  default     = []
+}
+
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "kv" {
@@ -89,6 +101,15 @@ resource "azurerm_key_vault" "kv" {
   enable_rbac_authorization  = true
   purge_protection_enabled   = true
   soft_delete_retention_days = 90
+
+  # Block network access by default (AZU-0013). Only trusted Azure services and the
+  # explicitly allowed IPs/subnets can reach the vault's data plane.
+  network_acls {
+    default_action             = "Deny"
+    bypass                     = "AzureServices"
+    ip_rules                   = var.key_vault_allowed_ip_rules
+    virtual_network_subnet_ids = var.key_vault_allowed_subnet_ids
+  }
 }
 
 # The identity running Terraform needs to write the secrets below.
