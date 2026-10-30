@@ -19,7 +19,10 @@ provider "azurerm" {
   features {}
 }
 
-
+# TLS 1.2 minimum is enforced through server parameters (Flexible Server has no
+# ssl_minimal_tls_version_enforced argument): see the require_secure_transport and
+# ssl_min_protocol_version (TLSv1.2) configuration resources below.
+#trivy:ignore:AZU-0026
 resource "azurerm_postgresql_flexible_server" "postgresql" {
   name                   = "psql-ecom-test-6"
   resource_group_name    = "ecom-test-6"
