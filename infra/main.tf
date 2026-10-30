@@ -26,9 +26,12 @@ provider "azurerm" {
 # server configuration resource below (Flexible Server has no inline argument for it).
 # Connection logging (AZU-0019) is enabled the same way: see the log_connections = "on"
 # server configuration resource below (Flexible Server has no inline argument for it).
+# Connection throttling (AZU-0021) is enabled the same way: see the connection_throttle.enable = "on"
+# server configuration resource below (Flexible Server has no inline argument for it).
 #trivy:ignore:AZU-0026
 #trivy:ignore:AZU-0024
 #trivy:ignore:AZU-0019
+#trivy:ignore:AZU-0021
 resource "azurerm_postgresql_flexible_server" "postgresql" {
   name                   = "psql-ecom-test-6"
   resource_group_name    = "ecom-test-6"
