@@ -19,7 +19,11 @@ provider "azurerm" {
   features {}
 }
 
-
+# AZU-0026: azurerm_postgresql_flexible_server has no TLS attribute of its own. The TLS 1.2 minimum
+# and required encrypted connections are set by the azurerm_postgresql_flexible_server_configuration
+# resources "ssl_min_protocol_version" (TLSv1.2) and "require_secure_transport" (on) below, which
+# the scanner does not link back to this server.
+#trivy:ignore:AZU-0026
 resource "azurerm_postgresql_flexible_server" "postgresql" {
   name                   = "psql-ecom-test-6"
   resource_group_name    = "ecom-test-6"
