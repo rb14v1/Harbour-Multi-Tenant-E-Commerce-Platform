@@ -66,6 +66,88 @@ resource "random_password" "postgresql_admin" {
   special = true
 }
 
+# --- Secrets (sec.no_hardcoded_secrets) ---------------------------------------------------------
+# Every backend secret lives in Key Vault. The backend Container App
+# (e-com-har-backend-api) reads them through its managed identity, using Key Vault references
+# for SECRET_KEY, JWT_SIGNING_KEY, DB_USER and DB_PASSWORD. backend/ecommerce/settings.py only
+# reads environment variables, so no secret is ever in source control. The values are generated
+# here, so applying this config replaces any value that was committed before.
+
+variable "backend_identity_principal_id" {
+  description = "Principal (object) ID of the e-com-har-backend-api managed identity, which gets read access to Key Vault secrets."
+  type        = string
+}
+
+data "azurerm_client_config" "current" {}
+
+resource "azurerm_key_vault" "kv" {
+  name                       = "kv-e-com-har"
+  resource_group_name        = "ecom-test-6"
+  location                   = "uksouth"
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  sku_name                   = "standard"
+  enable_rbac_authorization  = true
+  purge_protection_enabled   = true
+  soft_delete_retention_days = 90
+}
+
+# The identity running Terraform needs to write the secrets below.
+resource "azurerm_role_assignment" "kv_deployer_secrets_officer" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Secrets Officer"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+# The backend's managed identity can only read secrets.
+resource "azurerm_role_assignment" "kv_backend_secrets_user" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = var.backend_identity_principal_id
+}
+
+resource "random_password" "django_secret_key" {
+  length  = 64
+  special = true
+}
+
+resource "random_password" "jwt_signing_key" {
+  length  = 64
+  special = true
+}
+
+resource "azurerm_key_vault_secret" "django_secret_key" {
+  name         = "django-secret-key"
+  value        = random_password.django_secret_key.result
+  key_vault_id = azurerm_key_vault.kv.id
+  depends_on   = [azurerm_role_assignment.kv_deployer_secrets_officer]
+}
+
+resource "azurerm_key_vault_secret" "jwt_signing_key" {
+  name         = "jwt-signing-key"
+  value        = random_password.jwt_signing_key.result
+  key_vault_id = azurerm_key_vault.kv.id
+  depends_on   = [azurerm_role_assignment.kv_deployer_secrets_officer]
+}
+
+resource "azurerm_key_vault_secret" "db_user" {
+  name         = "db-user"
+  value        = azurerm_postgresql_flexible_server.postgresql.administrator_login
+  key_vault_id = azurerm_key_vault.kv.id
+  depends_on   = [azurerm_role_assignment.kv_deployer_secrets_officer]
+}
+
+resource "azurerm_key_vault_secret" "db_password" {
+  name         = "db-password"
+  value        = random_password.postgresql_admin.result
+  key_vault_id = azurerm_key_vault.kv.id
+  depends_on   = [azurerm_role_assignment.kv_deployer_secrets_officer]
+}
+
+output "key_vault_uri" {
+  description = "Key Vault URI used to build the backend's Key Vault secret references."
+  value       = azurerm_key_vault.kv.vault_uri
+}
+
 data "azurerm_private_dns_zone" "postgresql_dns_zone" {
   name                = "privatelink.postgres.database.azure.com"
   resource_group_name = var.hub_resource_group
