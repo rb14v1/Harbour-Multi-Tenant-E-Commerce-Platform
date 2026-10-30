@@ -74,6 +74,13 @@ resource "azurerm_postgresql_flexible_server_configuration" "ssl_min_protocol_ve
   value     = "TLSv1.2"
 }
 
+# Log connection attempts to the server (AZU-0019).
+resource "azurerm_postgresql_flexible_server_configuration" "log_connections" {
+  name      = "log_connections"
+  server_id = azurerm_postgresql_flexible_server.postgresql.id
+  value     = "on"
+}
+
 resource "random_password" "postgresql_admin" {
   length  = 24
   special = true
