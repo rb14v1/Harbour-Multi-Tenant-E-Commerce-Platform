@@ -84,9 +84,9 @@ resource "azurerm_postgresql_flexible_server_configuration" "log_checkpoints" {
   value     = "on"
 }
 
-# Throttle connections (AZU-0021).
-resource "azurerm_postgresql_flexible_server_configuration" "connection_throttle" {
-  name      = "connection_throttle.enable"
+# Log connections (AZU-0019).
+resource "azurerm_postgresql_flexible_server_configuration" "log_connections" {
+  name      = "log_connections"
   server_id = azurerm_postgresql_flexible_server.postgresql.id
   value     = "on"
 }
