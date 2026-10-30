@@ -61,6 +61,19 @@ resource "azurerm_postgresql_flexible_server" "postgresql" {
   }
 }
 
+# Enforce encrypted connections with a minimum of TLS 1.2 (AZU-0026).
+resource "azurerm_postgresql_flexible_server_configuration" "require_secure_transport" {
+  name      = "require_secure_transport"
+  server_id = azurerm_postgresql_flexible_server.postgresql.id
+  value     = "on"
+}
+
+resource "azurerm_postgresql_flexible_server_configuration" "ssl_min_protocol_version" {
+  name      = "ssl_min_protocol_version"
+  server_id = azurerm_postgresql_flexible_server.postgresql.id
+  value     = "TLSv1.2"
+}
+
 resource "random_password" "postgresql_admin" {
   length  = 24
   special = true
