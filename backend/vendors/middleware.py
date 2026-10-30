@@ -1,6 +1,6 @@
 from django.utils.deprecation import MiddlewareMixin
 from django.http import JsonResponse
-from vendors.models import Tenant, TenantUser
+from vendors.models import TenantUser
 import jwt
 from django.conf import settings
 from rest_framework_simplejwt.tokens import UntypedToken
@@ -38,16 +38,20 @@ class TenantMiddleware(MiddlewareMixin):
                     request.tenant_id = membership.tenant_id
                     request.user_role = membership.role
                 elif tenant_id:
-                    try:
-                        tenant = Tenant.objects.get(id=tenant_id)
-                        request.tenant = tenant
-                        request.tenant_id = tenant_id
-                        request.user_role = token_data.get('role')
-                    except Tenant.DoesNotExist:
+                    membership = TenantUser.objects.filter(
+                        user_id=token_data.get('user_id'),
+                        tenant_id=tenant_id,
+                        is_active=True,
+                        tenant__is_active=True
+                    ).select_related('tenant').first()
+                    if not membership:
                         return JsonResponse(
-                            {'error': 'Tenant not found'}, 
-                            status=404
+                            {'error': 'Not a member of this tenant'},
+                            status=403
                         )
+                    request.tenant = membership.tenant
+                    request.tenant_id = membership.tenant_id
+                    request.user_role = membership.role
                 else:
                     request.tenant = None
                     request.tenant_id = None
