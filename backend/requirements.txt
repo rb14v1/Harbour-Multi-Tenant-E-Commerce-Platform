@@ -4,5 +4,5 @@ djangorestframework-simplejwt>=5.5.1,<6
 psycopg2-binary==2.9.10
 python-decouple==3.8
 django-cors-headers>=4.6.0,<5
-django-extensions>=3.2.3,<5
+django-extensions>=4.1,<5
 django-filter>=25.1,<26
