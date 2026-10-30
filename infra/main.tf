@@ -74,6 +74,14 @@ resource "azurerm_postgresql_flexible_server_configuration" "ssl_min_protocol_ve
   value     = "TLSv1.2"
 }
 
+# Throttle repeated failed login attempts (AZU-0021). On Flexible Server this is the
+# "connection_throttle.enable" server parameter (the Single Server name was "connection_throttling").
+resource "azurerm_postgresql_flexible_server_configuration" "connection_throttling" {
+  name      = "connection_throttle.enable"
+  server_id = azurerm_postgresql_flexible_server.postgresql.id
+  value     = "on"
+}
+
 resource "random_password" "postgresql_admin" {
   length  = 24
   special = true
