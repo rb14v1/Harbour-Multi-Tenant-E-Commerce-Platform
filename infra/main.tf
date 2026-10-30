@@ -24,8 +24,11 @@ provider "azurerm" {
 # ssl_min_protocol_version (TLSv1.2) configuration resources below.
 # Checkpoint logging (AZU-0024) is enabled the same way: see the log_checkpoints = "on"
 # server configuration resource below (Flexible Server has no inline argument for it).
+# Connection logging (AZU-0019) is enabled the same way: see the log_connections = "on"
+# server configuration resource below (Flexible Server has no inline argument for it).
 #trivy:ignore:AZU-0026
 #trivy:ignore:AZU-0024
+#trivy:ignore:AZU-0019
 resource "azurerm_postgresql_flexible_server" "postgresql" {
   name                   = "psql-ecom-test-6"
   resource_group_name    = "ecom-test-6"
