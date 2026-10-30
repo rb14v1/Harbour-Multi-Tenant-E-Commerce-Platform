@@ -24,8 +24,11 @@ provider "azurerm" {
 # ssl_min_protocol_version (TLSv1.2) configuration resources below.
 # Checkpoint logging (AZU-0024) is enabled the same way: see the log_checkpoints = "on"
 # server configuration resource below (Flexible Server has no inline argument for it).
+# Connection throttling (AZU-0021) is enabled the same way: see the
+# connection_throttle.enable = "on" server configuration resource below.
 #trivy:ignore:AZU-0026
 #trivy:ignore:AZU-0024
+#trivy:ignore:AZU-0021
 resource "azurerm_postgresql_flexible_server" "postgresql" {
   name                   = "psql-ecom-test-6"
   resource_group_name    = "ecom-test-6"
@@ -90,6 +93,13 @@ resource "azurerm_postgresql_flexible_server_configuration" "log_checkpoints" {
 # Log connections (AZU-0019).
 resource "azurerm_postgresql_flexible_server_configuration" "log_connections" {
   name      = "log_connections"
+  server_id = azurerm_postgresql_flexible_server.postgresql.id
+  value     = "on"
+}
+
+# Connection throttling (AZU-0021).
+resource "azurerm_postgresql_flexible_server_configuration" "connection_throttling" {
+  name      = "connection_throttle.enable"
   server_id = azurerm_postgresql_flexible_server.postgresql.id
   value     = "on"
 }
