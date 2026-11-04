@@ -15,7 +15,6 @@ RUN printf 'server {\n    listen 8080;\n    server_name _;\n    root /usr/share/
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 WORKDIR /app
-COPY --chown=nginx:nginx backend /app/backend
 
 # nginx must run unprivileged, so every path it writes to moves somewhere the nginx user owns.
 RUN sed -i 's@^pid .*@pid /tmp/nginx.pid;@' /etc/nginx/nginx.conf \
