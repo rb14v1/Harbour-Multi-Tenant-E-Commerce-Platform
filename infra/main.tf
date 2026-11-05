@@ -22,9 +22,9 @@ provider "azurerm" {
 
 resource "azurerm_postgresql_flexible_server" "postgresql" {
   tags = var.common_tags
-  name                   = "psql-qwert"
-  resource_group_name    = "qwert"
-  location               = "uksouth"
+  name                   = "psql-mul-tent-ecom"
+  resource_group_name    = "mul-tent-ecom"
+  location               = "UK South "
   version                = "16"
   sku_name               = "B_Standard_B1ms"
   storage_mb             = 32768
@@ -58,7 +58,7 @@ data "azurerm_private_dns_zone" "postgresql_dns_zone" {
 
 resource "azurerm_private_dns_zone_virtual_network_link" "postgresql_dns_zone_link" {
   tags = var.common_tags
-  name                  = "link-qwert"
+  name                  = "link-mul-tent-ecom"
   resource_group_name   = var.hub_resource_group
   private_dns_zone_name = data.azurerm_private_dns_zone.postgresql_dns_zone.name
   virtual_network_id    = var.vnet_id
@@ -66,9 +66,9 @@ resource "azurerm_private_dns_zone_virtual_network_link" "postgresql_dns_zone_li
 
 resource "azurerm_private_endpoint" "postgresql_pe" {
   tags = var.common_tags
-  name                = "pe-psql-qwert"
-  resource_group_name = "qwert"
-  location            = "uksouth"
+  name                = "pe-psql-mul-tent-ecom"
+  resource_group_name = "mul-tent-ecom"
+  location            = "UK South "
   subnet_id           = var.subnet_id
 
   private_service_connection {
