@@ -73,6 +73,11 @@ docker-compose up --build
 
 API Endpoints
 
+### **Health Check**
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | `/healthz` | Liveness probe, returns `{"status": "ok"}` with HTTP 200 | No |
+
 Authentication
 ### **Authentication**
 | Method | Endpoint | Description | Auth |
