@@ -5,7 +5,7 @@ ENV VITE_API_URL=$VITE_API_URL
 
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN sed -i 's/"react-router-dom": "[^"]*"/"react-router-dom": "6.30.1"/' package.json && npm install
+RUN npm install
 COPY . .
 RUN npm run build
 
