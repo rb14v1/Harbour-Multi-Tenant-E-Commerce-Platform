@@ -139,6 +139,10 @@ Authentication
 | GET | `/api/customers/reviews/` | List reviews | Yes |
 
 
+Database Backup and Restore
+
+Automated backups (35-day retention, geo-redundant) and point-in-time restore are configured in `infra/main.tf`. See the [restore runbook](docs/runbooks/database-restore.md) for the restore procedure.
+
 Multi-Tenancy Implementation
 
 The platform uses django-tenants library to implement multi-tenancy at the database schema level. Each tenant gets its own MySQL schema with completely isolated data.
