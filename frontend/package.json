@@ -20,7 +20,7 @@
   "devDependencies": {
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "@vitejs/plugin-react": "^6.2.1",
+    "@vitejs/plugin-react": "^4.7.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
@@ -34,6 +34,7 @@
     "Security (sec.no_critical_cves): react-router and react-router-dom are pinned to the same exact patched release (7.18.5).",
     "react-router-dom 7.x is a thin re-export of react-router, so both must resolve to one version. react-router 8.x requires React 19 and is incompatible with react@18 used here.",
     "Releases before 6.30.3 / 7.12.0 carry HIGH open-redirect/XSS advisories (e.g. CVE-2026-22029), and 7.0.0-7.5.1 carry HIGH cache-poisoning/DoS advisories (CVE-2025-43864, CVE-2025-43865); 7.18.5 is outside all of these ranges.",
+    "@vitejs/plugin-react is held on 4.x because 6.x declares a vite ^8 peer dependency that conflicts with vite ^5 here; that conflict makes npm install fail with ERESOLVE, so the lockfile never picked up the react-router pin.",
     "The override forces any transitive react-router onto the same pinned version so no older vulnerable copy is pulled in.",
     "Accepted risk: if Trivy still reports a react-router CVE with no fixed version available, it is accepted for now because the app uses only declarative client-side routing (BrowserRouter/Routes/Route/Navigate) and no framework-mode SSR, loaders, actions or pre-rendering. Review date: 2027-02-04."
   ]
