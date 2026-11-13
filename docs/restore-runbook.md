@@ -1,6 +1,6 @@
 # Database restore runbook (rel.backup_configured)
 
-Server: `psql-ecom-test-6` (resource group `ecom-test-6`, region `uksouth`), defined in `infra/main.tf`.
+Server: `psql-mul-tent-ecom` (resource group `mul-tent-ecom`, region `uksouth`), defined in `infra/main.tf`.
 
 Backup posture (set in Terraform):
 - `backup_retention_days = 35` (Azure maximum; requirement is at least 30 days).
@@ -15,9 +15,9 @@ Note: `geo_redundant_backup_enabled` is ForceNew in the azurerm provider. Enabli
 
 ```sh
 az postgres flexible-server restore \
-  -g ecom-test-6 \
-  --name psql-ecom-test-6-restored \
-  --source-server psql-ecom-test-6 \
+  -g mul-tent-ecom \
+  --name psql-mul-tent-ecom-restored \
+  --source-server psql-mul-tent-ecom \
   --restore-time "<UTC ISO-8601 timestamp>"
 ```
 
@@ -25,9 +25,9 @@ az postgres flexible-server restore \
 
 ```sh
 az postgres flexible-server geo-restore \
-  -g ecom-test-6 \
-  --name psql-ecom-test-6-geo \
-  --source-server psql-ecom-test-6 \
+  -g mul-tent-ecom \
+  --name psql-mul-tent-ecom-geo \
+  --source-server psql-mul-tent-ecom \
   --location ukwest
 ```
 
@@ -45,4 +45,10 @@ Run a PITR restore to a new server name at least once, then:
 - [ ] Confirm the restored server reaches `Ready` state.
 - [ ] Connect over TLS to the restored server and confirm the expected data is present.
 - [ ] Delete the test server after the check.
-- [ ] Record the outcome here: ______________________
+- [ ] Record the outcome in the drill log below.
+
+### Restore drill log
+
+| Date (UTC) | Operator | Restore point (UTC) | Target server | Verification result |
+|------------|----------|---------------------|---------------|---------------------|
+| _No restore drill has been performed yet. Go-live is blocked until a row is recorded here._ | | | | |
