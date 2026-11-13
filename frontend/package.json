@@ -33,6 +33,7 @@
     "Releases before 6.30.3 / 7.12.0 carry HIGH open-redirect/XSS advisories (e.g. CVE-2026-22029), and 7.0.0-7.5.1 carry HIGH cache-poisoning/DoS advisories (CVE-2025-43864, CVE-2025-43865); 7.18.5 is outside all of these ranges.",
     "@vitejs/plugin-react is held on 4.x because 6.x declares a vite ^8 peer dependency that conflicts with vite ^5 here; that conflict makes npm install fail with ERESOLVE, so the lockfile never picked up the react-router pin.",
     "No overrides block is used: react-router-dom 7.18.5 depends on exactly react-router 7.18.5 and nothing else pulls react-router in, so the direct pin already yields a single copy. The previous self-referencing override was redundant and stopped npm from cleanly re-resolving the stale lockfile (which still held react-router 8.5.1 and @vitejs/plugin-react 6.x). Regenerate frontend/package-lock.json with npm install after this change.",
+    "Lockfile status: the committed frontend/package-lock.json still declared react-router ^6.30.6 and @vitejs/plugin-react ^6.2.1; it must be regenerated from this manifest with npm install so the installed versions are react-router/react-router-dom 7.18.5 and @vitejs/plugin-react 4.x.",
     "Accepted risk: if Trivy still reports a react-router CVE with no fixed version available, it is accepted for now because the app uses only declarative client-side routing (BrowserRouter/Routes/Route/Navigate) and no framework-mode SSR, loaders, actions or pre-rendering. Review date: 2027-02-04."
   ]
 }
