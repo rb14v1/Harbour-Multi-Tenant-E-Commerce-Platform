@@ -22,9 +22,9 @@ provider "azurerm" {
 
 resource "azurerm_postgresql_flexible_server" "postgresql" {
   tags = var.common_tags
-  name                   = "psql-e-commerce-nlpm"
-  resource_group_name    = "e-commerce-nlpm"
-  location               = "UK South "
+  name                   = "psql-budgetvariance-08749"
+  resource_group_name    = "budgetvariance-08749"
+  location               = "uksouth"
   version                = "16"
   sku_name               = "B_Standard_B1ms"
   storage_mb             = 32768
@@ -58,7 +58,7 @@ data "azurerm_private_dns_zone" "postgresql_dns_zone" {
 
 resource "azurerm_private_dns_zone_virtual_network_link" "postgresql_dns_zone_link" {
   tags = var.common_tags
-  name                  = "link-e-commerce-nlpm"
+  name                  = "link-budgetvariance-08749"
   resource_group_name   = var.hub_resource_group
   private_dns_zone_name = data.azurerm_private_dns_zone.postgresql_dns_zone.name
   virtual_network_id    = var.vnet_id
@@ -66,9 +66,9 @@ resource "azurerm_private_dns_zone_virtual_network_link" "postgresql_dns_zone_li
 
 resource "azurerm_private_endpoint" "postgresql_pe" {
   tags = var.common_tags
-  name                = "pe-psql-e-commerce-nlpm"
-  resource_group_name = "e-commerce-nlpm"
-  location            = "UK South "
+  name                = "pe-psql-budgetvariance-08749"
+  resource_group_name = "budgetvariance-08749"
+  location            = "uksouth"
   subnet_id           = var.subnet_id
 
   private_service_connection {
