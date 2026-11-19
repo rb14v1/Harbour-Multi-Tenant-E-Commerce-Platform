@@ -18,8 +18,6 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 WORKDIR /app
 
-COPY backend /app/backend
-
 # nginx must run unprivileged, so every path it writes to moves somewhere the nginx user owns.
 RUN sed -i 's@^pid .*@pid /tmp/nginx.pid;@' /etc/nginx/nginx.conf \
  && sed -i '/^user /d' /etc/nginx/nginx.conf \
